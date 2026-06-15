@@ -1,0 +1,41 @@
+name: Backend Deploy
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - "backend/**"
+
+jobs:
+
+  deploy:
+
+    runs-on: ubuntu-latest
+
+    steps:
+
+      - uses: actions/checkout@v4
+
+      - name: Deploy Backend
+        uses: appleboy/ssh-action@master
+
+        with:
+
+          host: ${{ secrets.APP_SERVER }}
+
+          username: ubuntu
+
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+
+          script: |
+
+            cd /home/ubuntu/bmi-health-tracker
+
+            git pull
+
+            cd backend
+
+            npm install
+
+            pm2 restart bmi-backend
